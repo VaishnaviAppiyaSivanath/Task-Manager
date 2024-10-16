@@ -1,0 +1,45 @@
+<template>
+    <lightning-card title="Task Management" icon-name="standard:task">
+
+        <lightning-button-group>
+            <lightning-button label="New" onclick={toggleFormVisibility}></lightning-button>
+            <lightning-button label="Complete" onclick={updateRecord}></lightning-button>
+            <lightning-button label="Delete" onclick={deleteRecord}></lightning-button>
+        </lightning-button-group>
+        <!-- Task List -->
+        <template if:false={hasNoTask}>
+            <lightning-datatable
+                key-field="Id"
+                data={tasks.data}
+                columns={columns}
+                onsave={handleSave}
+                onrowaction={handleRowAction}>
+            </lightning-datatable>
+        </template>
+
+        <!-- Message for No Tasks -->
+        <template if:true={hasNoTask}>
+            <p>No tasks found. Please add a new task.</p>
+        </template>
+
+        <!-- Create New Task Button -->
+        <!--<lightning-button label="New Task" onclick={toggleFormVisibility}></lightning-button> -->
+
+        <!-- New Task Form -->
+        <template if:true={showForm}>
+            <lightning-flow flow-api-name='Task_Creation' onstatuschange={handleStatusChange}>
+             </lightning-flow>
+        </template>
+
+        <!-- Delete Action -->
+        <template if:true={isDelete}>
+            <lightning-flow flow-api-name='Delete_Task' flow-input-variables={inputVariables}>
+             </lightning-flow>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={error}>
+            <p class="slds-text-color_error">{error}</p>
+        </template>
+    </lightning-card>
+</template>
