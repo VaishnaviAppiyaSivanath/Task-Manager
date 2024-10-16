@@ -1,8 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { getRecord, createRecord, updateRecord, deleteRecord } from 'lightning/uiRecordApi';
-import TASK_OBJECT from '@salesforce/schema/Task';
 import getTaskList from '@salesforce/apex/TaskController.getTasks';
 
 export default class TaskManager extends LightningElement {
@@ -39,8 +37,6 @@ export default class TaskManager extends LightningElement {
     @wire(getTaskList)
     wiredTasks(result) {
         this.tasks = result;
-        console.log('tasks!');
-        console.log(result);
         if(result.data && result.data.length === 0) {
             this.hasNoTask = true;
         } else if (result.error) {
@@ -71,12 +67,7 @@ export default class TaskManager extends LightningElement {
             refreshApex(this.tasks); // Refresh the task list
         }
     }
-    // Handle task creation success
-    handleSuccess(event) {
-        this.showToast('Task Created', 'Task has been created successfully', 'success');
-        this.showForm = false; // Hide the form
-        refreshApex(this.tasks); // Refresh the task list
-    }
+    
 
     // Handle row actions (Complete or Delete)
     handleRowAction(event) {
@@ -92,28 +83,12 @@ export default class TaskManager extends LightningElement {
 
     // Complete the task by updating its status
     updateTaskStatus(taskId, status) {
-        // Using LDS for task update
-        const fields = {};
-        fields['Id'] = taskId;
-        fields['Status'] = status;
-
-        // Notify user and refresh list
-        this.showToast('Task Completed', 'Task status updated successfully', 'success');
-        return refreshApex(this.tasks); // Refresh the task list
+        // set flow input variables
     }
 
-    // Delete the task using LDS
+    
     deleteTask(taskId) {
-        deleteRecord(taskId)
-            .then(() => {
-                this.showToast('Task Deleted', 'Task has been deleted successfully', 'success');
-                return refreshApex(this.tasks);
-            })
-            .catch(error => {
-                console.error(error);
-                this.error = error;
-                this.showToast('Error', 'Error deleting task', 'error');
-            });
+        // set flow input variables
     }
 
     // Show toast notifications
